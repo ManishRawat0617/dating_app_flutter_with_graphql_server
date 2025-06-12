@@ -1,7 +1,7 @@
 import 'package:dating_app/core/constants/color_constants.dart';
 import 'package:dating_app/screens/common_widget/loading_widget.dart';
 import 'package:dating_app/screens/common_widget/text_widget.dart';
-import 'package:dating_app/screens/create_profile/personal_details/bloc/personal_details_bloc.dart';
+import 'package:dating_app/screens/create_profile/bloc/personal_details_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

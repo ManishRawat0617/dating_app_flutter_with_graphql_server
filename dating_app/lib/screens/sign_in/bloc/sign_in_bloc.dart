@@ -37,11 +37,17 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     if (_validateTextFields()) {
       try {
         emit(const LoadingState());
-        print("SignInBloc: _onSignInTappedEvent called");
-        await SignInGraphql().SignInUser(
+        String auth_token = await SignInGraphql().SignInUser(
             email: "manishrawat1331@gmail.com", password: "password");
 
-        emit(const NextTabBarPageState());
+        if (auth_token.isNotEmpty) {
+          // Save the token to shared preferences or any secure storage
+          // SharedPrefsService.setAuthToken(auth_token);
+
+          emit(const NextTabBarPageState());
+        } else {
+          print("no ");
+        }
       } catch (e) {
         emit(ErrorState(message: e.toString()));
       }

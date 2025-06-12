@@ -1,4 +1,4 @@
-import 'package:dating_app/screens/create_profile/personal_details/bloc/personal_details_bloc.dart';
+import 'package:dating_app/screens/create_profile/bloc/personal_details_bloc.dart';
 import 'package:dating_app/screens/create_profile/personal_details/widget/personal_details_content.dart';
 import 'package:dating_app/screens/create_profile/quick_introduction/widget/quick_introduction_content.dart';
 import 'package:dating_app/screens/create_profile/user_preference/page/user_preference_page.dart';

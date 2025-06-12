@@ -8,7 +8,7 @@ const comparePassword = async (input, stored) =>
 
 const generateToken = (userId, email) =>
   jwt.sign({ id: userId, email: email }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "24h",
   });
 
 const authenticate = (authHeader) => {

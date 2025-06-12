@@ -21,7 +21,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   void _onTextChanged(OnTextChangedEvent event, Emitter<SignUpState> emit) {
     final isEnabled = _checkIfSignUpButtonEnabled();
     emit(SignUpButtonEnabledChangedState(
-        isEnabled: isEnabled, ));
+      isEnabled: isEnabled,
+    ));
   }
 
   bool _checkIfSignUpButtonEnabled() {
@@ -33,7 +34,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   Future<void> _onSignUpTappedEvent(
       SignUpTappedEvent event, Emitter<SignUpState> emit) async {
     try {
-      await SignupGraph().registerUser(
+      await SignupGraphql().registerUser(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
@@ -43,8 +44,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       emit(ErrorState(message: e.toString()));
     }
   }
-
-
 
   void _onTermsAndConditionsTappedEvent(
       TermsAndConditionsTappedEvent event, Emitter<SignUpState> emit) {

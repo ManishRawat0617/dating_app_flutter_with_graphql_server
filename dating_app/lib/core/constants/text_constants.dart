@@ -1,6 +1,11 @@
+import 'package:flutter/material.dart';
+
 class TextConstants {
   // Common
   static const String start = "Start";
+  static const String next = "Next";
+  static const String skip = "Skip >>";
+  static const String save = "Save";
 
   // Sign Up
   static const String createAccount = "Create Account";
@@ -37,7 +42,6 @@ class TextConstants {
 
   static const String doNotHaveAnAccount = "Do not have an account?";
 
-  // Create profile screen
   // more_about_you
 
   static const String moreAboutYou = "More about you";
@@ -66,31 +70,6 @@ class TextConstants {
   static const String joinUs = 'Join us in social media';
   static const String rateUsOn = "Rate us on ";
   static const String termsAndConditions = "Terms & Conditions";
-
-  // Edit account screen
-  static const String editAccount = 'Edit account';
-  static const String editPhoto = 'Edit photo';
-  static const String fullName = 'Full name';
-  static const String nameShouldContain2Char =
-      'Name should contain at least 2 characters';
-
-  // Edit account screen -> show settings
-  static const String cameraPermission = 'Camera permisson';
-  static const String cameAccess =
-      'This app needs camera access to take pictures for upload user profile photo';
-  static const String deny = 'Deny';
-  static const String settings = 'Settings';
-  static const String fullNamePlaceholder = 'Enter your full name';
-
-  //Change password screen
-  static const String newPassword = 'New password';
-  static const String passwordUpdated = 'Password successfully updated!';
-
-  //Forgot password screen
-  static const passwordReset = 'Password Reset';
-  static const sendActivationBuild = 'Send Activation Link';
-  static const resetPasswordLinkWasSent =
-      'Reset password link was sent on your email.';
 }
 
 class HomePageText {
@@ -98,4 +77,69 @@ class HomePageText {
   static const String noMoreProfile = "No More Profile";
   static const String likeProfile = "Like";
   static const String dislikeProfle = "Dislike";
+}
+
+class PersonalDetailsPageText {
+  static const String personalDetails = "Personal Details";
+  static const String fillInYourDetails =
+      "Fill in your details so people know you better.";
+  static const String firstName = "First Name";
+  static const String firstNamePlaceholder = "Enter your first name";
+  static const String firstNameErrorText = "First name is required";
+  static const String lastName = "Last Name";
+  static const String lastNamePlaceholder = "Enter your last name";
+  static const String lastNameErrorText = "Last name is required";
+  static const String dateOfBirth = "Date of Birth";
+  static const String dateOfBirthPlaceholder = "MM/DD/YYYY";
+  static const String dateOfBirthErrorText = "Date of birth is required";
+  static const String gender = "Gender";
+  static const String genderPlaceholder = "Select Your Gender";
+  static const String genderErrorText = "Gender is required";
+  static const String age = "Age";
+  static const String agePlaceholder = "Enter your age";
+  static const String ageErrorText = "Age is required";
+}
+
+class MoreAboutYouPageText {
+  static const String moreAboutYou = "More About You";
+  static const String moreAboutYou_subtitle =
+      "Just a few more details about you";
+  static const String occupation = "Occupation";
+  static const String occupationPlaceholder =
+      "e.g. Student / Software engg etc";
+  static const String location = "Location";
+  static const String locationPlacholder = "Enter your address";
+  static const String instagram = "Instagram Handle";
+  static const String instagramPlaceholder = "Instagram ID";
+  static const String connectWithOtherOnSocialMedia =
+      "Connect with others on social media.";
+}
+
+class YourPreferencePageText {
+  static const String yourPerference = "Your preferences";
+  static const String typeOfRelationship = "Type Of Relationship";
+  static const String genderInterstedIn = "Gender Interested In";
+  static const String religionInterstedIn = "Religion Interested In";
+  static const String ageRange = "Age Range";
+  static const String distance = "Distance";
+}
+
+class UploadPhotoPageText{
+  static const UploadI
+}
+
+class ProfilePageText {
+  static const String activeSince = "Active Since : ";
+  static const String personalDetails = "Personal Details";
+  static const String edit = "Edit";
+  static const String phone = "Phone";
+  static const String email = "Email";
+  static const String address = "Address";
+  static const String occupation = "Occupation";
+  static const String utilities = "Utilities";
+  static const String photoUploaded = "Photo Uploaded";
+  static const String usageAnalytics = "Usage Analytics";
+  static const String askHelpDesk = "Ask Help-Desk";
+  static const String appSettings = "App Settings";
+  static const String logOut = "Log-Out";
 }

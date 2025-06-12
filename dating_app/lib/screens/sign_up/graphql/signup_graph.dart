@@ -1,7 +1,7 @@
 import 'package:dating_app/core/service/graphql_service.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-class SignupGraph {
+class SignupGraphql {
   Future<Map<String, dynamic>> registerUser({
     required String email,
     required String password,
@@ -40,33 +40,38 @@ mutation registerUser(\$email: String!, \$password_hash: String!) {
     }
   }
 
-  Future<void> updateUser({
-    required String id,
-    String? email,
-    String? password_hash,
-    String? gender,
-    int? age,
-    String? location,
-    String? bio,
-  }) async {
+  Future<void> updateUser(
+      {required String id,
+      String? email,
+      String? name,
+      String? password_hash,
+      String? gender,
+      int? age,
+      String? location,
+      String? bio,
+      String? occupation}) async {
     const String updateUserMutation = '''
     mutation UpdateUser(
       \$id: ID!
       \$email: String
+      \$name: String
       \$password_hash: String
       \$gender: String
       \$age: Int
       \$location: String
       \$bio: String
+      \$occupation:String
     ) {
       updateUser(
         id: \$id
         email: \$email
+        name: \$name
         password_hash: \$password_hash
         gender: \$gender
         age: \$age
         location: \$location
         bio: \$bio
+        occupation: \$occupation
       ) {
         id
         email
@@ -74,6 +79,7 @@ mutation registerUser(\$email: String!, \$password_hash: String!) {
         age
         location
         bio
+        name
       }
     }
   ''';
@@ -81,10 +87,12 @@ mutation registerUser(\$email: String!, \$password_hash: String!) {
     final Map<String, dynamic> variables = {
       "id": id,
       if (email != null) "email": email,
+      if (name != null) "name": name,
       if (password_hash != null) "password_hash": password_hash,
       if (gender != null) "gender": gender,
       if (age != null) "age": age,
       if (location != null) "location": location,
+      if (occupation != null) "occupation": occupation,
       if (bio != null) "bio": bio,
     };
 

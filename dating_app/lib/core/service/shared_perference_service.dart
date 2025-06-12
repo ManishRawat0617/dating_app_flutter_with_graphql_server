@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dating_app/data/models/userModal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefsService {
@@ -8,8 +11,26 @@ class SharedPrefsService {
   }
 
   // ------------------- Setters -------------------
+
+  static Future<void> saveUser(UserModel user) async {
+    final jsonString = jsonEncode(user.toMap());
+    await _prefs?.setString('user_model', jsonString);
+  }
+
   static Future<void> setIsLoggedIn(bool value) async =>
       await _prefs?.setBool('isLoggedIn', value);
+
+  static Future<void> setAuthToken(String value) async =>
+      await _prefs?.setString("authToken", value);
+
+  static Future<void> setName(String value) async =>
+      await _prefs?.setString("name", value);
+
+  static Future<void> setEmail(String value) async =>
+      await _prefs?.setString("email", value);
+
+  static Future<void> setUserID(String value) async =>
+      await _prefs?.setString("userID", value);
 
   static Future<void> setFirstName(String firstName) async =>
       await _prefs?.setString('firstName', firstName);
@@ -41,8 +62,42 @@ class SharedPrefsService {
   static Future<void> setInstagram(String instagram) async =>
       await _prefs?.setString('instagram', instagram);
 
+  static Future<void> setRelationshipType(String relationshipType) async =>
+      await _prefs?.setString('relationshipType', relationshipType);
+
+  static Future<void> setAgeRange(double minAge, double maxAge) async {
+    await _prefs?.setDouble('minAge', minAge);
+    await _prefs?.setDouble('maxAge', maxAge);
+  }
+
+  static Future<void> setDistance(double distanceKm) async =>
+      await _prefs?.setDouble('distanceKm', distanceKm);
+
+  static Future<void> setGenderInterestedIn(String gender) async =>
+      await _prefs?.setString('genderInterestedIn', gender);
+
+  static Future<void> setReligionInterestedIn(String religion) async =>
+      await _prefs?.setString('religionInterestedIn', religion);
+
   // ------------------- Getters -------------------
+
+  static UserModel? getUser() {
+    final jsonString = _prefs?.getString('user_model');
+    if (jsonString == null) return null;
+
+    final map = jsonDecode(jsonString);
+    return UserModel.fromMap(map);
+  }
+
   static bool getIsLoggedIn() => _prefs?.getBool('isLoggedIn') ?? false;
+
+  static String? getAuthToken() => _prefs?.getString("authToken");
+
+  static String? getUserID() => _prefs?.getString("userID");
+
+  static String? getName() => _prefs?.getString("name");
+
+  static String? getEmail() => _prefs?.getString("email");
 
   static String? getFirstName() => _prefs?.getString('firstName');
 
@@ -64,6 +119,18 @@ class SharedPrefsService {
   static String? getLocation() => _prefs?.getString('location');
 
   static String getInstagram() => _prefs?.getString('instagram') ?? '';
+  static String? getRelationshipType() => _prefs?.getString('relationshipType');
+
+  static double? getMinAge() => _prefs?.getDouble('minAge');
+  static double? getMaxAge() => _prefs?.getDouble('maxAge');
+
+  static double? getDistanceKm() => _prefs?.getDouble('distanceKm');
+
+  static String? getGenderInterestedIn() =>
+      _prefs?.getString('genderInterestedIn');
+
+  static String? getReligionInterestedIn() =>
+      _prefs?.getString('religionInterestedIn');
 
   // ------------------- Utilities -------------------
   static Future<void> clearAll() async => await _prefs?.clear();

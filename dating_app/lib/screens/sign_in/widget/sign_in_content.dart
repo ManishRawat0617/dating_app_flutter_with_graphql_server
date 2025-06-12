@@ -22,8 +22,6 @@ class SignInContent extends StatefulWidget {
 }
 
 class _SignInContentState extends State<SignInContent> {
-  bool _agreed = false;
-
   @override
   Widget build(BuildContext context) {
     return Container(

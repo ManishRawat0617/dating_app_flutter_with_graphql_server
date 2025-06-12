@@ -1,9 +1,11 @@
 import 'package:dating_app/core/constants/color_constants.dart';
 import 'package:dating_app/core/constants/list_constant.dart';
+import 'package:dating_app/core/constants/text_constants.dart';
 import 'package:dating_app/core/service/shared_perference_service.dart';
 import 'package:dating_app/screens/common_widget/loading_widget.dart';
 import 'package:dating_app/screens/common_widget/text_widget.dart';
-import 'package:dating_app/screens/create_profile/personal_details/bloc/personal_details_bloc.dart';
+import 'package:dating_app/screens/create_profile/common_widget/dot_indicator.dart';
+import 'package:dating_app/screens/create_profile/bloc/personal_details_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,15 +15,12 @@ class UserPreferencesContent extends StatefulWidget {
 }
 
 class _UserPreferencesContentState extends State<UserPreferencesContent> {
-  String? _interestedIn;
-  RangeValues _ageRange = const RangeValues(20, 32);
-  double _distance = 20;
-  String? _interestedGenderIn;
-  String? _interestedReligionIn;
+  String? _selectedGender;
+  String? _selectedRelationship;
+  String? _selectedReligion;
 
   @override
   Widget build(BuildContext context) {
-    final spaceBtwWidgets = 10.0;
     return Container(
       height: double.infinity,
       width: double.infinity,
@@ -45,29 +44,75 @@ class _UserPreferencesContentState extends State<UserPreferencesContent> {
   }
 
   Widget _createMainBody(BuildContext context) {
+    final bloc = BlocProvider.of<PersonalDetailsBloc>(context);
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildStepIndicator(),
+            const DotIndicatorWidget(currentIndex: 3, shouldSkip: false),
             const SizedBox(height: 30),
             const TextWidget(
-                title: "Your preferences",
-                textSize: 25,
-                textColor: ColorConstants.primary,
-                boldness: FontWeight.bold),
+              title: YourPreferencePageText.yourPerference,
+              textSize: 25,
+              textColor: ColorConstants.primary,
+              boldness: FontWeight.bold,
+            ),
             const SizedBox(height: 30),
-            _buildTypeOfRelationship(),
+            _buildDropdown(
+              YourPreferencePageText.typeOfRelationship,
+              ListConstant.relationshipTypes,
+              _selectedRelationship,
+              (val) {
+                setState(() {
+                  _selectedRelationship = val;
+                  bloc.typeOfRelationshipInterestedInController = val;
+                });
+              },
+            ),
             const SizedBox(height: 30),
             _buildAgeRangeSelector(),
             const SizedBox(height: 10),
             _buildDistanceSelector(),
             const SizedBox(height: 20),
-            _buildTypeOfGenderInterestedIn(),
+            _buildDropdown(
+              YourPreferencePageText.genderInterstedIn,
+              ListConstant.genderList,
+              _selectedGender,
+              (val) {
+                setState(() {
+                  _selectedGender = val;
+                  bloc.interestedGenderInController = val ?? '';
+                });
+              },
+            ),
             const SizedBox(height: 20),
-            _buildTypeOfReligionInterestedIn(),
+            _buildDropdown(
+              YourPreferencePageText.religionInterstedIn,
+              ListConstant.religionAndBeliefOptions,
+              _selectedReligion,
+              (val) {
+                setState(() {
+                  _selectedReligion = val;
+                  bloc.interestedReligionInController = val;
+
+                  bloc.add(OnTextChangedUserPreference(
+                    typeOfRelationshipInterestedIn:
+                        bloc.typeOfRelationshipInterestedInController ?? '',
+                    interestedGenderIn: bloc.interestedGenderInController ?? '',
+                    interestedReligionIn:
+                        bloc.interestedReligionInController ?? '',
+                    interestedInAgeRange:
+                        "${bloc.interestedInAgeRangeController.start.round()}-${bloc.interestedInAgeRangeController.end.round()}",
+                    interestedInDistance:
+                        (bloc.interestedInDistanceController ?? 0)
+                            .round()
+                            .toString(),
+                  ));
+                });
+              },
+            ),
             const SizedBox(height: 30),
             _buildNextButton(context),
           ],
@@ -76,198 +121,147 @@ class _UserPreferencesContentState extends State<UserPreferencesContent> {
     );
   }
 
-  Widget _buildStepIndicator() {
-    return Row(
-      children: List.generate(5, (index) {
-        return Container(
-          margin: const EdgeInsets.only(right: 8),
-          width: 10,
-          height: 10,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: index == 3 ? ColorConstants.primary : Colors.grey.shade300,
-          ),
-        );
-      }),
-    );
-  }
-
-// type of relationship
-  Widget _buildTypeOfRelationship() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const TextWidget(
-            title: "Type of relationship you're looking for",
-            textSize: 16,
-            textColor: ColorConstants.primary,
-            boldness: FontWeight.w400),
-        const SizedBox(height: 10),
-        _buildDropdown("Interested In", ListConstant.relationshipTypes,
-            _interestedIn, (val) => setState(() => _interestedIn = val))
-      ],
-    );
-  }
-
-// Age range selector
   Widget _buildAgeRangeSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final bloc = BlocProvider.of<PersonalDetailsBloc>(context);
+    return BlocBuilder<PersonalDetailsBloc, PersonalDetailsState>(
+      buildWhen: (previous, current) =>
+          current is AgeRangeUpdatedState ||
+          current is CreateProfileInitialState,
+      builder: (context, state) {
+        final ageRange = bloc.interestedInAgeRangeController;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const TextWidget(
-                title: "Age Range",
-                textSize: 16,
-                textColor: ColorConstants.primary),
-            Text(
-              "${_ageRange.start.round()} - ${_ageRange.end.round()}",
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: ColorConstants.primary,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const TextWidget(
+                  title: YourPreferencePageText.ageRange,
+                  textSize: 16,
+                  textColor: ColorConstants.primary,
+                ),
+                Text(
+                  "${ageRange.start.round()} - ${ageRange.end.round()}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: ColorConstants.primary,
+                  ),
+                ),
+              ],
+            ),
+            RangeSlider(
+              values: ageRange,
+              min: 18,
+              max: 100,
+              divisions: 82,
+              labels: RangeLabels(
+                ageRange.start.round().toString(),
+                ageRange.end.round().toString(),
               ),
+              activeColor: ColorConstants.primary,
+              onChanged: (values) {
+                bloc.add(AgeRangeChanged(values));
+              },
             ),
           ],
-        ),
-        RangeSlider(
-          values: _ageRange,
-          min: 18,
-          max: 100,
-          divisions: 82,
-          labels: RangeLabels(_ageRange.start.round().toString(),
-              _ageRange.end.round().toString()),
-          activeColor: ColorConstants.primary,
-          onChanged: (values) {
-            setState(() {
-              _ageRange = values;
-            });
-          },
-        )
-      ],
+        );
+      },
     );
   }
 
-// Distance selector
   Widget _buildDistanceSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final bloc = BlocProvider.of<PersonalDetailsBloc>(context);
+    return BlocBuilder<PersonalDetailsBloc, PersonalDetailsState>(
+      buildWhen: (previous, current) =>
+          current is DistanceUpdateState ||
+          current is CreateProfileInitialState,
+      builder: (context, state) {
+        final _distance = bloc.interestedInDistanceController ?? 0;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const TextWidget(
-                title: "Distance",
-                textSize: 16,
-                textColor: ColorConstants.primary),
-            Text(
-              "${_distance.round()} Km",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: ColorConstants.primary,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const TextWidget(
+                    title: YourPreferencePageText.distance,
+                    textSize: 16,
+                    textColor: ColorConstants.primary),
+                Text(
+                  "${_distance.round()} Km",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: ColorConstants.primary,
+                  ),
+                ),
+              ],
+            ),
+            Slider(
+              value: _distance,
+              min: 0,
+              max: 100,
+              divisions: 99,
+              label: "${_distance.round()} Km",
+              activeColor: ColorConstants.primary,
+              onChanged: (val) {
+                bloc.add(DistanceChanged(val));
+              },
             ),
           ],
-        ),
-        Slider(
-          value: _distance,
-          min: 1,
-          max: 100,
-          divisions: 99,
-          label: "${_distance.round()} Km",
-          activeColor: ColorConstants.primary,
-          onChanged: (val) {
-            setState(() => _distance = val);
-          },
-        ),
-      ],
+        );
+      },
     );
   }
 
-  // type of relationship
-  Widget _buildTypeOfGenderInterestedIn() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const TextWidget(
-            title: "Gender Interested In",
-            textSize: 16,
-            textColor: ColorConstants.primary,
-            boldness: FontWeight.w400),
-        const SizedBox(height: 10),
-        _buildDropdown(
-            "Interested In",
-            ListConstant.genderList,
-            _interestedGenderIn,
-            (val) => setState(() => _interestedGenderIn = val))
-      ],
-    );
-  }
-
-  // type of relationship
-  Widget _buildTypeOfReligionInterestedIn() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const TextWidget(
-            title: "Religion Interested In",
-            textSize: 16,
-            textColor: ColorConstants.primary,
-            boldness: FontWeight.w400),
-        const SizedBox(height: 10),
-        _buildDropdown(
-            "Interested In",
-            ListConstant.religionAndBeliefOptions,
-            _interestedReligionIn,
-            (val) => setState(() => _interestedReligionIn = val))
-      ],
-    );
-  }
-
-// Dropdown widget for selecting options
   Widget _buildDropdown(String label, List<String> options, String? value,
       void Function(String?) onChanged) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: DropdownButtonFormField<String>(
-        value: value,
-        items: options
-            .map((e) => DropdownMenuItem(
-                value: e,
-                child: Text(
-                  e,
-                  style: TextStyle(color: ColorConstants.primary),
-                )))
-            .toList(),
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          label: value == null
-              ? Text(
-                  "Select you $label",
-                  style: TextStyle(color: ColorConstants.grey),
-                )
-              : null,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(
-              color: ColorConstants.textFieldBorder.withOpacity(0.4),
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: const BorderSide(
-              color: ColorConstants.primary,
-            ),
-          ),
-          filled: true,
-          fillColor: ColorConstants.textFieldBackground,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextWidget(
+          title: label,
+          textColor: ColorConstants.primary,
         ),
-      ),
+        const SizedBox(height: 5),
+        DropdownButtonFormField<String>(
+          value: value,
+          items: options
+              .map((e) => DropdownMenuItem(
+                    value: e,
+                    child: Text(
+                      e,
+                      style: TextStyle(color: ColorConstants.primary),
+                    ),
+                  ))
+              .toList(),
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            label: value == null
+                ? Text(
+                    "Select your $label",
+                    style: const TextStyle(color: ColorConstants.grey),
+                  )
+                : const Text(""),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: BorderSide(
+                color: ColorConstants.textFieldBorder.withOpacity(0.4),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: const BorderSide(
+                color: ColorConstants.primary,
+              ),
+            ),
+            filled: true,
+            fillColor: ColorConstants.textFieldBackground,
+          ),
+        ),
+      ],
     );
   }
 
@@ -276,14 +270,18 @@ class _UserPreferencesContentState extends State<UserPreferencesContent> {
     return BlocBuilder<PersonalDetailsBloc, PersonalDetailsState>(
       builder: (context, state) {
         final isEnabled =
-            state is NextPageEnabledChangedState && state.isEnabled;
+            true ?? state is NextPageEnabledChangedState && state.isEnabled;
 
         return InkWell(
-          onTap: isEnabled
-              ? () {
-                  bloc.add(NextPageUserPreferencesTapped());
-                }
-              : null,
+          // onTap: isEnabled
+          //     ? () {
+          //         bloc.add(NextPageUploadPhotoTapped());
+          //       }
+          //     : null,
+
+          onTap: () {
+             bloc.add(NextPageUploadPhotoTapped());
+          },
           child: Container(
             width: double.infinity,
             height: 50,
@@ -293,7 +291,7 @@ class _UserPreferencesContentState extends State<UserPreferencesContent> {
             ),
             child: const Center(
               child: TextWidget(
-                title: "Next",
+                title: TextConstants.save,
                 textColor: Colors.white,
                 textSize: 18,
                 boldness: FontWeight.bold,

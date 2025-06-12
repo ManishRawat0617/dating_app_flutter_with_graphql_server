@@ -9,6 +9,7 @@ const photoSchema = require("../graphql_schema/photo_schema");
 const reportSchema = require("../graphql_schema/report_schema");
 const messageSchema = require("../graphql_schema/match_schema");
 const blockSchema = require("../graphql_schema/block_schema");
+const userPreferenceSchema = require("../graphql_schema/user_preferences_schema");
 
 // Merge type definitions and resolvers
 const typeDefs = mergeTypeDefs([
@@ -19,6 +20,7 @@ const typeDefs = mergeTypeDefs([
   reportSchema.reportTypeDefs,
   messageSchema.matchTypeDefs,
   blockSchema.blockTypeDefs,
+  userPreferenceSchema.userPreferenceTypeDefs,
 ]);
 
 const resolvers = mergeResolvers([
@@ -29,6 +31,7 @@ const resolvers = mergeResolvers([
   reportSchema.reportResolvers,
   messageSchema.matchResolvers,
   blockSchema.blockResolvers,
+  userPreferenceSchema.userPreferenceResolvers,
 ]);
 
 const schema = makeExecutableSchema({

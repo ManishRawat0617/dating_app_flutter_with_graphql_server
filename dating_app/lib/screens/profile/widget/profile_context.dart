@@ -1,14 +1,60 @@
 import 'package:dating_app/core/constants/color_constants.dart';
+import 'package:dating_app/core/constants/text_constants.dart';
+import 'package:dating_app/core/service/shared_perference_service.dart';
+import 'package:dating_app/data/models/userModal.dart';
+import 'package:dating_app/screens/common_widget/loading_widget.dart';
 import 'package:dating_app/screens/common_widget/text_widget.dart';
+import 'package:dating_app/screens/profile/bloc/profile_page_bloc.dart';
+import 'package:dating_app/screens/profile/graphql/profile_page_graphql.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProfileContext extends StatelessWidget {
+class ProfileContext extends StatefulWidget {
   const ProfileContext({super.key});
+
+  @override
+  State<ProfileContext> createState() => _ProfileContextState();
+}
+
+class _ProfileContextState extends State<ProfileContext> {
+  late dynamic loggedUser;
+  UserModel? savedUser = SharedPrefsService.getUser();
+  @override
+  void initState() {
+    getUserProfile(user_id: SharedPrefsService.getUserID().toString());
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      color: ColorConstants.white,
+      child: Stack(
+        children: [
+          _createMainBody(context, size),
+          BlocBuilder<ProfilePageBloc, ProfilePageState>(
+            buildWhen: (_, currState) =>
+                currState is LoadingState ||
+                currState is ErrorState ||
+                currState is EditDetailsState,
+            builder: (context, state) {
+              if (state is LoadingState) {
+                return LoadingWidget();
+              }
+              return const SizedBox();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _createMainBody(BuildContext content, Size size) {
     return SingleChildScrollView(
       padding: EdgeInsets.only(
         left: size.width * 0.05,
@@ -19,7 +65,7 @@ class ProfileContext extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _createAvatar(context, "Manish Rawat"),
+          _createAvatar(context, savedUser!.name.toUpperCase()),
           SizedBox(height: size.height * 0.03),
           _createPersonalDetailsSection(size),
           SizedBox(height: size.height * 0.04),
@@ -51,7 +97,7 @@ class ProfileContext extends StatelessWidget {
         ),
         SizedBox(height: size.height * 0.01),
         TextWidget(
-          title: "Active Since : 4 May 2024",
+          title: ProfilePageText.activeSince + "jfdkjd",
           textSize: size.width * 0.035,
           boldness: FontWeight.w500,
         ),
@@ -60,21 +106,24 @@ class ProfileContext extends StatelessWidget {
   }
 
   Widget _createPersonalDetailsSection(Size size) {
+    final bloc = BlocProvider.of<ProfilePageBloc>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
             const TextWidget(
-              title: "Personal Details",
+              title: ProfilePageText.personalDetails,
               textSize: 18,
               boldness: FontWeight.bold,
             ),
             const Spacer(),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                bloc.add(const EditProfileTappedEvent());
+              },
               icon: const Icon(Icons.edit, size: 18),
-              label: const Text("Edit", style: TextStyle(fontSize: 14)),
+              label: Text(ProfilePageText.edit, style: TextStyle(fontSize: 14)),
               style: ElevatedButton.styleFrom(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -93,7 +142,7 @@ class ProfileContext extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border.all(color: Colors.pinkAccent, width: 2),
+            border: Border.all(color: ColorConstants.primary, width: 2),
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
@@ -108,20 +157,24 @@ class ProfileContext extends StatelessWidget {
             child: Column(
               children: [
                 _createTile(
-                    icon: Icons.phone, label: "Phone", value: "+1 234 567 890"),
+                    icon: Icons.phone,
+                    label: ProfilePageText.phone,
+                    value: savedUser!.phone_number),
                 const Divider(color: ColorConstants.primary),
                 _createTile(
                     icon: Icons.email,
-                    label: "Email",
-                    value: "alex@example.com"),
+                    label: ProfilePageText.email,
+                    value: savedUser!.email),
                 const Divider(color: ColorConstants.primary),
                 _createTile(
                     icon: Icons.location_on,
-                    label: "Address",
-                    value: "123 Love Lane, NY"),
+                    label: ProfilePageText.address,
+                    value: savedUser!.location),
                 const Divider(color: ColorConstants.primary),
                 _createTile(
-                    icon: Icons.work, label: "Occupation", value: "Engineer"),
+                    icon: Icons.work,
+                    label: ProfilePageText.occupation,
+                    value: savedUser!.occupation),
               ],
             ),
           ),
@@ -138,7 +191,7 @@ class ProfileContext extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.pinkAccent),
+        Icon(icon, color: ColorConstants.primary),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -156,11 +209,12 @@ class ProfileContext extends StatelessWidget {
   }
 
   Widget utilitiesSection(Size size) {
+    final bloc = BlocProvider.of<ProfilePageBloc>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const TextWidget(
-          title: "Utilities",
+          title: ProfilePageText.utilities,
           textSize: 18,
           boldness: FontWeight.bold,
         ),
@@ -169,7 +223,7 @@ class ProfileContext extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             color: ColorConstants.primary,
-            border: Border.all(color: Colors.pinkAccent, width: 2),
+            border: Border.all(color: ColorConstants.primary, width: 2),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Padding(
@@ -177,19 +231,27 @@ class ProfileContext extends StatelessWidget {
             child: Column(
               children: [
                 _createUtilityTile(
-                    icon: Icons.image_rounded, label: "Photos Uploaded"),
+                    icon: Icons.image_rounded,
+                    label: ProfilePageText.photoUploaded),
                 const Divider(color: ColorConstants.primary),
                 _createUtilityTile(
-                    icon: Icons.analytics_outlined, label: "Usage Analytics"),
+                    icon: Icons.analytics_outlined,
+                    label: ProfilePageText.usageAnalytics),
                 const Divider(color: ColorConstants.primary),
                 _createUtilityTile(
-                    icon: Icons.help_outline_rounded, label: "Ask Help-Desk"),
+                    icon: Icons.help_outline_rounded,
+                    label: ProfilePageText.askHelpDesk),
                 const Divider(color: ColorConstants.primary),
                 _createUtilityTile(
-                    icon: Icons.settings_rounded, label: "App Settings"),
+                    icon: Icons.settings_rounded,
+                    label: ProfilePageText.appSettings),
                 const Divider(color: ColorConstants.primary),
                 _createUtilityTile(
-                    icon: Icons.logout_rounded, label: "Log-Out"),
+                    onTap: () {
+                      bloc.add(LogOutTappedEvent());
+                    },
+                    icon: Icons.logout_rounded,
+                    label: ProfilePageText.logOut),
               ],
             ),
           ),
