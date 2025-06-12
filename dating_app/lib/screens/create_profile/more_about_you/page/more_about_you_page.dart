@@ -1,8 +1,9 @@
-import 'package:dating_app/screens/create_profile/more_about_you/widget/more_about_you_widget.dart';
+import 'package:dating_app/screens/create_profile/more_about_you/widget/more_about_you_content.dart';
 import 'package:dating_app/screens/create_profile/personal_details/bloc/personal_details_bloc.dart';
 import 'package:dating_app/screens/create_profile/personal_details/widget/personal_details_content.dart';
 import 'package:dating_app/screens/create_profile/quick_introduction/widget/quick_introduction_content.dart';
 import 'package:dating_app/screens/create_profile/user_preference/widget/user_preference_content.dart';
+import 'package:dating_app/screens/create_profile/verify_user/page/verify_user_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,9 +19,9 @@ class MoreAboutYouPage extends StatelessWidget {
   Widget _buildBody(BuildContext context) {
     return BlocConsumer<PersonalDetailsBloc, PersonalDetailsState>(
       listener: (context, state) {
-        if (state is NextPageQuickIntroductionState) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => QuickIntroductionContent()));
+        if (state is NextPageUploadPhotoState) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => VerifyUserPage()));
         } else if (state is ErrorState) {
           print("Error: ${state.message}");
           // ScaffoldMessenger.of(context)

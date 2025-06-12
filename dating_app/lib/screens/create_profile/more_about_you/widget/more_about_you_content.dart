@@ -1,8 +1,11 @@
 import 'package:dating_app/core/constants/color_constants.dart';
 import 'package:dating_app/core/constants/text_constants.dart';
+import 'package:dating_app/screens/common_widget/loading_widget.dart';
 import 'package:dating_app/screens/common_widget/textFormField.dart';
 import 'package:dating_app/screens/common_widget/text_widget.dart';
+import 'package:dating_app/screens/create_profile/personal_details/bloc/personal_details_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MoreAboutYouContent extends StatefulWidget {
   @override
@@ -18,6 +21,27 @@ class _MoreAboutYouContentState extends State<MoreAboutYouContent> {
 
   @override
   Widget build(BuildContext context) {
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      color: Colors.white,
+      child: Stack(
+        children: [
+          _createMainBody(context),
+          BlocBuilder<PersonalDetailsBloc, PersonalDetailsState>(
+            builder: (context, state) {
+              if (state is LoadingState) {
+                return LoadingWidget();
+              }
+              return const SizedBox();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _createMainBody(BuildContext context) {
     return SafeArea(
         child: SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -54,6 +78,7 @@ class _MoreAboutYouContentState extends State<MoreAboutYouContent> {
           const SizedBox(height: 10),
           _buildTextField("Enter your Instagram handle", _instagramController),
           _buildTextField("Enter your Twitter handle", _twitterController),
+          _buildNextButton(context),
         ],
       ),
     ));
@@ -90,6 +115,40 @@ class _MoreAboutYouContentState extends State<MoreAboutYouContent> {
           ),
         );
       }),
+    );
+  }
+
+  Widget _buildNextButton(BuildContext context) {
+    final bloc = BlocProvider.of<PersonalDetailsBloc>(context);
+    return BlocBuilder<PersonalDetailsBloc, PersonalDetailsState>(
+      builder: (context, state) {
+        final isEnabled =
+            true ?? state is NextPageEnabledChangedState && state.isEnabled;
+
+        return InkWell(
+          onTap: isEnabled
+              ? () {
+                  bloc.add(NextPageUploadPhotoTapped());
+                }
+              : null,
+          child: Container(
+            width: double.infinity,
+            height: 50,
+            decoration: BoxDecoration(
+              color: isEnabled ? ColorConstants.primary : Colors.grey,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Center(
+              child: TextWidget(
+                title: "Next",
+                textColor: Colors.white,
+                textSize: 18,
+                boldness: FontWeight.bold,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

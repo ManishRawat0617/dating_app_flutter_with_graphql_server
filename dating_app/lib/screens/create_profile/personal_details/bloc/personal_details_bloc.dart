@@ -14,7 +14,8 @@ class PersonalDetailsBloc
     on<OnTextChangedUserPreference>(_onTextChangedUserPreference);
     on<NextPageQuickIntroductionTapped>(_onNextPageQuickIntroductionTapped);
     on<NextPageUserPreferencesTapped>(_onNextPageUserPreferencesTapped);
-    
+
+    on<NextPageUploadPhotoTapped>(_onNextPageUploadPhotoTapped);
   }
 
 // personal details controllers
@@ -35,6 +36,13 @@ class PersonalDetailsBloc
   final interestedReligionInController = TextEditingController();
   final interestedInAgeRangeController = TextEditingController();
   final interestedInDistanceController = TextEditingController();
+  
+  // more about you controllers
+  final occupationController = TextEditingController();
+  final educationController = TextEditingController();
+  final locationController = TextEditingController();
+  final instagramController = TextEditingController();
+  
 
   bool _checkIfNextPageQuickIntroductionButtonEnabled() {
     return firstNameController.text.isNotEmpty &&
@@ -102,7 +110,17 @@ class PersonalDetailsBloc
     }
   }
 
-  
+  Future<void> _onNextPageUploadPhotoTapped(
+    NextPageUploadPhotoTapped event,
+    Emitter<PersonalDetailsState> emit,
+  ) async {
+    try {
+      emit(const LoadingState());
+      emit(const NextPageUploadPhotoState());
+    } catch (e) {
+      emit(ErrorState(message: e.toString()));
+    }
+  }
 
   @override
   Future<void> close() {

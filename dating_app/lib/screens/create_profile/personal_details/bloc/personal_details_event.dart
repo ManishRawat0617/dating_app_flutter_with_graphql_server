@@ -68,3 +68,7 @@ class NextPageUploadPhotoTapped extends PersonalDetailsEvent {
 class NextPageVerifyUserTapped extends PersonalDetailsEvent {
   const NextPageVerifyUserTapped();
 }
+
+class NextPageTapped extends PersonalDetailsEvent {
+  const NextPageTapped();
+}

@@ -32,6 +32,15 @@ class SharedPrefsService {
   static Future<void> setBio(String bio) async =>
       await _prefs?.setString('bio', bio);
 
+  static Future<void> setOccupation(String occupation) async =>
+      await _prefs?.setString('occupation', occupation);
+
+  static Future<void> setLocation(String location) async =>
+      await _prefs?.setString('location', location);
+
+  static Future<void> setInstagram(String instagram) async =>
+      await _prefs?.setString('instagram', instagram);
+
   // ------------------- Getters -------------------
   static bool getIsLoggedIn() => _prefs?.getBool('isLoggedIn') ?? false;
 
@@ -49,6 +58,12 @@ class SharedPrefsService {
       _prefs?.getString('sexualOrientation');
 
   static String? getBio() => _prefs?.getString('bio');
+
+  static String? getOccupation() => _prefs?.getString('occupation');
+
+  static String? getLocation() => _prefs?.getString('location');
+
+  static String getInstagram() => _prefs?.getString('instagram') ?? '';
 
   // ------------------- Utilities -------------------
   static Future<void> clearAll() async => await _prefs?.clear();

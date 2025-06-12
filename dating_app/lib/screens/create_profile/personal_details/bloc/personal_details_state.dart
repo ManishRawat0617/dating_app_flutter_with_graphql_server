@@ -17,6 +17,23 @@ class ShowErrorState extends PersonalDetailsState {
   const ShowErrorState();
 }
 
+// error state
+class ErrorState extends PersonalDetailsState {
+  final String message;
+
+  const ErrorState({required this.message});
+}
+
+// Loading state
+class LoadingState extends PersonalDetailsState {
+  const LoadingState();
+}
+
+// Success state
+class SuccessState extends PersonalDetailsState {
+  const SuccessState();
+}
+
 class NextPageQuickIntroductionState extends PersonalDetailsState {
   const NextPageQuickIntroductionState();
 }
@@ -25,17 +42,14 @@ class NextPageUserPreferencesState extends PersonalDetailsState {
   const NextPageUserPreferencesState();
 }
 
-
-class ErrorState extends PersonalDetailsState {
-  final String message;
-
-  const ErrorState({required this.message});
+class NextPageMoreAboutYouState extends PersonalDetailsState {
+  const NextPageMoreAboutYouState();
 }
 
-class LoadingState extends PersonalDetailsState {
-  const LoadingState();
+class NextPageVerifyPageState extends PersonalDetailsState {
+  const NextPageVerifyPageState();
 }
 
-class SuccessState extends PersonalDetailsState {
-  const SuccessState();
+class NextPageUploadPhotoState extends PersonalDetailsState {
+  const NextPageUploadPhotoState();
 }
