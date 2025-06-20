@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:dating_app/core/service/shared_perference_service.dart';
 import 'package:dating_app/core/utilis/validation/validationService.dart';
+import 'package:dating_app/screens/User/profile%20screen/graphql/profile_page_graphql.dart';
 import 'package:dating_app/screens/sign_in/bloc/sign_in_event.dart';
 import 'package:dating_app/screens/sign_in/bloc/sign_in_state.dart';
 import 'package:dating_app/screens/sign_in/graphql/signin_graph.dart';
@@ -36,17 +40,24 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       SignInTappedEvent event, Emitter<SignInState> emit) async {
     if (_validateTextFields()) {
       try {
-        emit(const LoadingState());
-        String auth_token = await SignInGraphql().SignInUser(
-            email: "manishrawat1331@gmail.com", password: "password");
+        // emit(const LoadingState());
+        Map<String, dynamic> response = await SignInGraphql().SignInUser(
+            email: emailController.value.text,
+            password: passwordController.value.text);
 
-        if (auth_token.isNotEmpty) {
-          // Save the token to shared preferences or any secure storage
-          // SharedPrefsService.setAuthToken(auth_token);
+        String auth_token = response['token'];
 
-          emit(const NextTabBarPageState());
+        if (response.isNotEmpty) {
+          dynamic response = await getUserProfile(
+              user_id: SharedPrefsService.getUserID().toString());
+          SharedPrefsService.setAuthToken(auth_token);
+          if (response.data['getUserById']['name'] == null) {
+            emit(NextPersonalDetailPageState());
+          } else {
+            emit(const NextTabBarPageState());
+          }
         } else {
-          print("no ");
+          emit(ErrorState(message: "User not found !!"));
         }
       } catch (e) {
         emit(ErrorState(message: e.toString()));

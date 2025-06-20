@@ -131,35 +131,41 @@
 //   }
 // }
 
+import 'package:dating_app/core/constants/api_constants.dart';
+import 'package:dating_app/core/constants/capitalizeFirstLetter.dart';
 import 'package:dating_app/core/constants/color_constants.dart';
+import 'package:dating_app/core/service/shared_perference_service.dart';
+import 'package:dating_app/screens/like_your_profile/graphql/like_your_profile_page_graphql.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 
-class LikesYouPage extends StatelessWidget {
-  LikesYouPage({super.key});
+class LikesYouPage extends StatefulWidget {
+  const LikesYouPage({super.key});
 
-  final List<Map<String, String>> likes = [
-    {
-      'name': 'Emma Johnson',
-      'age': '23',
-      'image': 'https://randomuser.me/api/portraits/women/21.jpg',
-    },
-    {
-      'name': 'Sophia Lee',
-      'age': '26',
-      'image': 'https://randomuser.me/api/portraits/women/32.jpg',
-    },
-    {
-      'name': 'Ava Brown',
-      'age': '22',
-      'image': 'https://randomuser.me/api/portraits/women/45.jpg',
-    },
-    {
-      'name': 'Mia Davis',
-      'age': '24',
-      'image': 'https://randomuser.me/api/portraits/women/55.jpg',
-    },
-  ];
+  @override
+  State<LikesYouPage> createState() => _LikesYouPageState();
+}
+
+class _LikesYouPageState extends State<LikesYouPage> {
+  List<Map<String, dynamic>> likes = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLikes();
+  }
+
+  Future<void> fetchLikes() async {
+    // final userId = await SharedPreferenceService.getUserId(); // Assuming you store it
+    final result = await getLikesToUser(
+        userId: "ab75b81b-a237-4253-ae4e-65bb5e0ac7c7"); // Your GraphQL call
+    setState(() {
+      likes = result as List<Map<String, dynamic>>;
+      print(likes);
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -178,76 +184,84 @@ class LikesYouPage extends StatelessWidget {
           ),
         ),
       ),
-      body: likes.isEmpty
-          ? const Center(
-              child: Text(
-                'No likes yet 😢',
-                style: TextStyle(fontSize: 18),
-              ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: likes.length,
-              itemBuilder: (context, index) {
-                final person = likes[index];
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 8,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : likes.isEmpty
+              ? const Center(
+                  child: Text(
+                    'No likes yet 😢',
+                    style: TextStyle(fontSize: 18),
                   ),
-                  child: Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          person['image']!,
-                          height: 70,
-                          width: 70,
-                          fit: BoxFit.cover,
-                        ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: likes.length,
+                  itemBuilder: (context, index) {
+                    final person = likes[index];
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              person['name']!,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              ApiEndpoints.basic_address +
+                                      "3000" +
+                                      person['profile_photo_url'] ??
+                                  '', // handle nulls
+                              height: 70,
+                              width: 70,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(IconlyLight.user),
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '${person['age']} years old',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey,
-                              ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  capitalizeEachWord(person['liker_name']) ??
+                                      'Unknown',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${person['liker_age'] ?? '--'} years old',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                          const Icon(
+                            IconlyLight.heart,
+                            color: Colors.pink,
+                            size: 28,
+                          )
+                        ],
                       ),
-                      const Icon(
-                        IconlyLight.heart,
-                        color: Colors.pink,
-                        size: 28,
-                      )
-                    ],
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
     );
   }
 }

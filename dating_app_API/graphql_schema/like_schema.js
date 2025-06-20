@@ -6,12 +6,21 @@ type Like {
   from_user_id: ID!
   to_user_id: ID!
   liked_at: String
+ 
+}
+
+type LikedByUser {
+  from_user_id: ID!
+  liker_name: String
+  liker_age: Int
+  liked_at: String
+  profile_photo_url : String
 }
 
 type Query {
   getLike(id: ID!): Like
   getAllLikes: [Like!]
-  getLikesByUser(userId: ID!): [Like!]
+   getLikesToUser(userId: ID!): [LikedByUser!]
 }
 
 type Mutation {
@@ -32,11 +41,30 @@ const likeResolvers = {
       const result = await pool.query("SELECT * FROM likes");
       return result.rows;
     },
-    getLikesByUser: async (_, { userId }) => {
+    // getLikesToUser: async (_, { userId }) => {
+    //   const result = await pool.query(
+    //     "SELECT * FROM likes WHERE to_user_id = $1",
+    //     [userId]
+    //   );
+
+    //   return result.rows;
+    // },
+    getLikesToUser: async (_, { userId }) => {
       const result = await pool.query(
-        "SELECT * FROM likes WHERE from_user_id = $1",
+        `SELECT 
+  likes.from_user_id,
+  users.name AS liker_name,
+  users.age AS liker_age,
+  likes.liked_at,
+  photos.url AS profile_photo_url
+FROM likes
+JOIN users ON likes.from_user_id = users.id
+JOIN photos ON photos.user_id = users.id AND photos.is_profile = TRUE
+WHERE likes.to_user_id = $1;
+ `,
         [userId]
       );
+
       return result.rows;
     },
   },

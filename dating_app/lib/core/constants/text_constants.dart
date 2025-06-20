@@ -124,8 +124,14 @@ class YourPreferencePageText {
   static const String distance = "Distance";
 }
 
-class UploadPhotoPageText{
-  static const UploadI
+class UploadPhotoPageText {
+  static const String uploadSuccessful = "Upload Successful";
+  static const String uploadFailed = "Upload Failed";
+  static const String serverIssues = "Server Issues";
+  static const String title = "Upload your images";
+  static const String subtitle = "The images will be shared in your profile.";
+  static const String takeASelfie = 'Take a selfie';
+  static const String uploadFromGallery = 'Upload from gallery';
 }
 
 class ProfilePageText {
@@ -142,4 +148,35 @@ class ProfilePageText {
   static const String askHelpDesk = "Ask Help-Desk";
   static const String appSettings = "App Settings";
   static const String logOut = "Log-Out";
+}
+
+class LifestylePageText {
+  static const String lifestyleTitle = "Tell about your lifestyle";
+  static const String lifestyleSubtitle = "Let us know your lifestyle preferences";
+  static const String successMessage = "Lifestyle details saved successfully!";
+  static const doYouSmoke = "Do you smoke?";
+  static const doYouDrink = "Do you drink?";
+  static const havePets = "Do you have pets?";
+  static const wantKids = "Do you want kids?";
+  static const dietaryPreference = "Dietary Preference";
+  static const relationshipGoal = "Relationship Goal";
+  static const religion = "Religion";
+  static const sleepSchedule = "Sleep Schedule";
+  static const fitnessLevel = "Fitness Level";
+
+  static const selectYour = "Select your";
+  static const yes = "Yes";
+  static const no = "No";
+
+  static const errorPrefix = "Error: ";
+}
+
+
+class PersonalityPageText {
+  static const String personalityType = "Personality Type";
+  static const String zodiacSign = "Zodiac Sign";
+  static const String politicalView = "Political View";
+  static const String loveLanguage = "Love Language";
+  static const String humorStyle = "Humor Style";
+  static const String savePersonalityDetails = "Save Personality Details";
 }

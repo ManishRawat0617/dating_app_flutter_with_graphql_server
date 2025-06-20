@@ -52,4 +52,85 @@ class ListConstant {
     'Other',
     'Prefer not to say',
   ];
+
+  static const List<String> dietaryPreference = [
+    "Vegetarian",
+    "Non-Vegetarian",
+    "Vegan",
+    "Other"
+  ];
+
+  static const List<String> sleepSchedule = [
+    "Early Bird",
+    "Night Owl",
+    "Flexible"
+  ];
+  static const List<String> fitnessLevels = [
+    'Not Active',
+    'Lightly Active',
+    'Moderately Active',
+    'Very Active',
+    'Fitness Enthusiast',
+    'Athlete Level',
+  ];
+
+  static const List<String> personalityTypes = [
+    'INTJ',
+    'INTP',
+    'ENTJ',
+    'ENTP',
+    'INFJ',
+    'INFP',
+    'ENFJ',
+    'ENFP',
+    'ISTJ',
+    'ISFJ',
+    'ESTJ',
+    'ESFJ',
+    'ISTP',
+    'ISFP',
+    'ESTP',
+    'ESFP',
+  ];
+
+  static const List<String> zodiacSigns = [
+    'Aries',
+    'Taurus',
+    'Gemini',
+    'Cancer',
+    'Leo',
+    'Virgo',
+    'Libra',
+    'Scorpio',
+    'Sagittarius',
+    'Capricorn',
+    'Aquarius',
+    'Pisces',
+  ];
+
+  static const List<String> politicalViews = [
+    'Liberal',
+    'Conservative',
+    'Moderate',
+    'Libertarian',
+    'Apolitical',
+    'Other',
+  ];
+
+  static const List<String> loveLanguages = [
+    'Words of Affirmation',
+    'Acts of Service',
+    'Receiving Gifts',
+    'Quality Time',
+    'Physical Touch',
+  ];
+
+  static const List<String> humorStyles = [
+    'Dry',
+    'Sarcastic',
+    'Goofy',
+    'Dark',
+    'Witty',
+    'Slapstick',
+  ];
 }

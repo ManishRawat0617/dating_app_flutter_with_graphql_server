@@ -113,4 +113,57 @@ mutation registerUser(\$email: String!, \$password_hash: String!) {
       throw Exception('Server error: ${e.toString()}');
     }
   }
+
+  Future<void> createUserPreference({
+  required String userId,
+  int? interestedAgeMin,
+  int? interestedAgeMax,
+  String? interestedGender,
+  String? interestedReligion,
+  int? maxDistance,
+  String? typeOfRelationship,
+}) async {
+  const String mutation = r'''
+    mutation CreateUserPreference($input: UserPreferenceInput!) {
+      createUserPreference(input: $input) {
+        id
+        user_id
+        interested_age_min
+        interested_age_max
+        interested_gender
+        interested_religion
+        max_distance
+        type_of_relationship
+      }
+    }
+  ''';
+
+  final Map<String, dynamic> input = {
+    "user_id": userId,
+    if (interestedAgeMin != null) "interested_age_min": interestedAgeMin,
+    if (interestedAgeMax != null) "interested_age_max": interestedAgeMax,
+    if (interestedGender != null) "interested_gender": interestedGender,
+    if (interestedReligion != null) "interested_religion": interestedReligion,
+    if (maxDistance != null) "max_distance": maxDistance,
+    if (typeOfRelationship != null) "type_of_relationship": typeOfRelationship,
+  };
+
+  try {
+    final response = await GraphQLService.client.mutate(
+      MutationOptions(
+        document: gql(mutation),
+        variables: {"input": input},
+      ),
+    );
+
+    if (response.hasException) {
+      throw Exception('CreateUserPreference failed: ${response.exception.toString()}');
+    } else {
+      print('User preference created: ${response.data}');
+    }
+  } catch (e) {
+    throw Exception('Server error: ${e.toString()}');
+  }
+}
+
 }

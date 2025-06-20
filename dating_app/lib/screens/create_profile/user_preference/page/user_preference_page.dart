@@ -1,4 +1,6 @@
+import 'package:dating_app/core/utilis/snackbar/ShowToast.dart';
 import 'package:dating_app/screens/create_profile/bloc/personal_details_bloc.dart';
+import 'package:dating_app/screens/create_profile/lifestyle/page/lifestyle_page.dart';
 import 'package:dating_app/screens/create_profile/personal_details/widget/personal_details_content.dart';
 import 'package:dating_app/screens/create_profile/quick_introduction/widget/quick_introduction_content.dart';
 import 'package:dating_app/screens/create_profile/Photo/upload_photos/page/upload_image_page.dart';
@@ -22,18 +24,11 @@ class UserPreferencePage extends StatelessWidget {
           Future.delayed(const Duration(seconds: 1), () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => UploadImagePage()),
+              MaterialPageRoute(builder: (_) => LifestylePage()),
             );
           });
         } else if (state is ErrorState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+            ShowToast.display(message: state.message);
         }
       },
       builder: (context, state) {

@@ -1,14 +1,20 @@
 import 'dart:io';
 
+import 'package:dating_app/core/constants/api_constants.dart';
+import 'package:dating_app/core/constants/color_constants.dart';
+import 'package:dating_app/core/constants/text_constants.dart';
+import 'package:dating_app/core/utilis/snackbar/ShowToast.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 
-Future<void> uploadImageToServer(File imageFile) async {
-  var uri = Uri.parse(
-      "http://192.168.90.104:3000/upload"); // Replace with your backend URL
+Future<void> uploadImageToServer(File imageFile, String userId) async {
+  var uri =
+      Uri.parse(ApiEndpoints.uploadImageAPI); // Replace with your backend URL
 
   var request = http.MultipartRequest('POST', uri);
+
+  // Attach the image file
   request.files.add(
     await http.MultipartFile.fromPath(
       'image',
@@ -17,24 +23,26 @@ Future<void> uploadImageToServer(File imageFile) async {
     ),
   );
 
+  // Add user_id to the request
+  request.fields['userID'] = userId;
+
   try {
     var response = await request.send();
     if (response.statusCode == 201 || response.statusCode == 200) {
-      final responseBody = await response.stream.bytesToString();
-      print('✅ Upload successful: $responseBody');
-      // ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-      //   SnackBar(content: Text('Image uploaded successfully')),
-      // );
+      ShowToast.display(
+          message: UploadPhotoPageText.uploadSuccessful,
+          backgroundColor: ColorConstants.primary,
+          textColor: ColorConstants.white);
     } else {
-      print('❌ Upload failed with status: ${response.statusCode}');
-      // ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-      //   SnackBar(content: Text('Failed to upload image')),
-      // );
+      ShowToast.display(
+          message: UploadPhotoPageText.uploadFailed,
+          backgroundColor: Colors.red,
+          textColor: ColorConstants.white);
     }
   } catch (e) {
-    print('❌ Error uploading image: $e');
-    // ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-    //   SnackBar(content: Text('Error: $e')),
-    // );
+    ShowToast.display(
+        message: UploadPhotoPageText.serverIssues,
+        backgroundColor: Colors.red,
+        textColor: ColorConstants.white);
   }
 }

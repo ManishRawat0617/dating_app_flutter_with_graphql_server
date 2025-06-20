@@ -19,10 +19,9 @@ class UploadButtonEnabledChangedState extends UploadPhotoState {
   const UploadButtonEnabledChangedState({required this.isEnabled});
 }
 
-class NextPageTState extends UploadPhotoState {
-  const NextPageTState();
+class NextPageState extends UploadPhotoState {
+  const NextPageState();
 }
-
 
 class LoadingState extends UploadPhotoState {
   const LoadingState();

@@ -7,7 +7,6 @@ abstract class UploadPhotoEvent {
 class AddPhotoEvent extends UploadPhotoEvent {
   final File file;
   const AddPhotoEvent({required this.file});
-  
 }
 
 class RemovePhotoEvent extends UploadPhotoEvent {
@@ -21,4 +20,8 @@ class ListChangedEvent extends UploadPhotoEvent {
 
 class NextPageTapped extends UploadPhotoEvent {
   const NextPageTapped();
+}
+
+class TappedOnUploadPhoto extends UploadPhotoEvent {
+  const TappedOnUploadPhoto();
 }

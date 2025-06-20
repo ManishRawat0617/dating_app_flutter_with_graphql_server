@@ -1,7 +1,7 @@
 import 'package:dating_app/core/constants/text_constants.dart';
 import 'package:dating_app/screens/common_widget/loading_widget.dart';
-import 'package:dating_app/screens/home/bloc/home_bloc.dart';
-import 'package:dating_app/screens/home/widget/person_card.dart';
+import 'package:dating_app/screens/home/bloc/home_page_bloc.dart';
+import 'package:dating_app/screens/home/widget/person_profile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -10,85 +10,47 @@ import 'package:iconly/iconly.dart';
 
 class HomeContext extends StatelessWidget {
   HomeContext({super.key});
-
+  // final Map<String, dynamic> person = {
+  //   'name': 'Emma Johnson',
+  //   'age': '24',
+  //   'images': [
+  //     'https://randomuser.me/api/portraits/women/21.jpg',
+  //     'https://randomuser.me/api/portraits/women/45.jpg',
+  //     'https://randomuser.me/api/portraits/women/55.jpg',
+  //   ],
+  // };
   final List<Map<String, String>> people = [
-    {
-      'name': 'Sabila Sayma',
-      'age': '24',
-      'image': 'assets/images/chiku.png',
-    },
-    {
-      'name': 'Lina Gomez',
-      'age': '22',
-      'image': 'assets/images/chiku.png',
-    },
-    {
-      'name': 'Olivia Smith',
-      'age': '25',
-      'image': 'assets/images/chiku.png',
-    },
-    {
-      'name': 'Sabila Sayma',
-      'age': '24',
-      'image': 'assets/images/chiku.png',
-    },
-    {
-      'name': 'Lina Gomez',
-      'age': '22',
-      'image': 'assets/images/chiku.png',
-    },
-    {
-      'name': 'Olivia Smith',
-      'age': '25',
-      'image': 'assets/images/chiku.png',
-    },
-    {
-      'name': 'Sabila Sayma',
-      'age': '24',
-      'image': 'assets/images/chiku.png',
-    },
-    {
-      'name': 'Lina Gomez',
-      'age': '22',
-      'image': 'assets/images/chiku.png',
-    },
-    {
-      'name': 'Olivia Smith',
-      'age': '25',
-      'image': 'assets/images/chiku.png',
-    },
+    {'name': 'Sabila Sayma', 'age': '24', 'image': 'assets/images/chiku.png'},
+    {'name': 'Lina Gomez', 'age': '22', 'image': 'assets/images/chiku.png'},
+    {'name': 'Olivia Smith', 'age': '25', 'image': 'assets/images/chiku.png'},
+
+    // Add more as needed
   ];
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Container(
-        height: double.infinity,
-        width: double.infinity,
-        color: ColorConstants.white,
-        child: Stack(
-          children: [
-            _createMainBody(context),
-              BlocBuilder<HomeBloc, HomeState>(
-              buildWhen: (prev, curr) =>
-                  curr is LoadingState ||
-                  curr is ErrorState ||
-                  curr is ProfileLoadingState,
-              builder: (context, state) {
-                if (state is LoadingState) {
-                  return LoadingWidget();
-                }
-                return const SizedBox();
-              },
-            )
-          ],
-          ));
+      color: Color.fromRGBO(234, 228, 213, 1),
+      child: Stack(
+        children: [
+          _createMainBody(context),
+          BlocBuilder<HomeBloc, HomePageState>(
+            buildWhen: (_, curr) =>
+                curr is LoadingState ||
+                curr is ErrorState ||
+                curr is ProfileLoadingState,
+            builder: (_, state) =>
+                state is LoadingState ? LoadingWidget() : const SizedBox(),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _createMainBody(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final bloc = BlocProvider.of<HomeBloc>(context);
+    final bloc = context.read<HomeBloc>();
+
     return SafeArea(
       child: people.isEmpty
           ? const Center(
@@ -98,28 +60,39 @@ class HomeContext extends StatelessWidget {
               ),
             )
           : Padding(
-              padding: EdgeInsets.only(
-                left: size.width * 0.05,
-                right: size.width * 0.05,
-                top: size.height * 0.02,
-                bottom: size.height * 0.03,
+              padding: EdgeInsets.symmetric(
+                horizontal: size.width * 0.05,
+                vertical: size.height * 0.02,
               ),
               child: CardSwiper(
                 cardsCount: people.length,
-                numberOfCardsDisplayed: 3,
+                numberOfCardsDisplayed: 1,
                 padding: EdgeInsets.zero,
-                isLoop: false,
-                allowedSwipeDirection:
-                    const AllowedSwipeDirection.only(left: true, right: true),
+                isLoop: true,
+                allowedSwipeDirection: const AllowedSwipeDirection.only(
+                  left: true,
+                  right: true,
+                ),
+                onSwipe: (int previousIndex, int? currentIndex,
+                    CardSwiperDirection direction) {
+                  if (direction == CardSwiperDirection.left) {
+                    bloc.add(const SwipeLeftEvent("dfsdnfv"));
+                  } else if (direction == CardSwiperDirection.right) {
+                    bloc.add(SwipeRightEvent("djsnvm"));
+                  }
+                  return true;
+                },
                 cardBuilder:
                     (context, index, percentThresholdX, percentThresholdY) {
                   final person = people[index];
 
-                  bool showLike = percentThresholdX > 0.2;
-                  bool showNope = percentThresholdX < -0.2;
-
-                  return PerssonCard(
-                      person: person, showLike: showLike, showNope: showNope);
+                  bool showLike = percentThresholdX > 0.4;
+                  bool showNope = percentThresholdX < -0.4;
+                  return PersonProfileCard(
+                    person: person,
+                    showLike: showLike,
+                    showNope: showNope,
+                  );
                 },
               ),
             ),

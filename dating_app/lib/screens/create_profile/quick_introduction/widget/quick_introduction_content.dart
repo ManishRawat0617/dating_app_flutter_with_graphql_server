@@ -2,6 +2,7 @@ import 'package:dating_app/core/constants/color_constants.dart';
 import 'package:dating_app/screens/common_widget/loading_widget.dart';
 import 'package:dating_app/screens/common_widget/text_widget.dart';
 import 'package:dating_app/screens/create_profile/bloc/personal_details_bloc.dart';
+import 'package:dating_app/screens/create_profile/common_widget/dot_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,7 +41,7 @@ class QuickIntroductionContent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildStepIndicator(),
+            DotIndicatorWidget(currentIndex: 2, shouldSkip: false),
             const SizedBox(height: 30),
             const TextWidget(
               title: "Quick introduction",

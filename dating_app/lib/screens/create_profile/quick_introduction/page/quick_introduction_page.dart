@@ -1,3 +1,4 @@
+import 'package:dating_app/core/utilis/snackbar/ShowToast.dart';
 import 'package:dating_app/screens/create_profile/bloc/personal_details_bloc.dart';
 import 'package:dating_app/screens/create_profile/personal_details/widget/personal_details_content.dart';
 import 'package:dating_app/screens/create_profile/quick_introduction/widget/quick_introduction_content.dart';
@@ -21,14 +22,7 @@ class QuickIntroductionPage extends StatelessWidget {
           Navigator.push(
               context, MaterialPageRoute(builder: (_) => UserPreferencePage()));
         } else if (state is ErrorState) {
-          print("Error: ${state.message}");
-          // ScaffoldMessenger.of(context)
-          //   ..hideCurrentSnackBar()
-          //   ..showSnackBar(StatusSnackbar.show(
-          //     title: 'Error',
-          //     message: state.message,
-          //     contentType: ContentType.success,
-          //   ));
+            ShowToast.display(message: state.message);
         }
       },
       builder: (context, state) {

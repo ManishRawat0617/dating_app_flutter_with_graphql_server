@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dating_app/screens/create_profile/Photo/verify_user/widget/ShowPhotoUploadBottomSheet.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dating_app/core/constants/color_constants.dart';
@@ -25,36 +26,10 @@ class _VerifyUserContentState extends State<VerifyUserContent> {
     }
   }
 
-  void _showImageSourceActionSheet() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => SafeArea(
-        child: Container(
-          height: 180,
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.camera_alt),
-                title: const Text('Take a selfie'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.camera);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text('Upload from gallery'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.gallery);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  void _showImageSourceActionSheet() async {
+    await showPhotoUploadBottomSheet(context, (source) {
+      _pickImage(source);
+    });
   }
 
   @override

@@ -38,7 +38,7 @@ class OnboardingContent extends StatelessWidget {
   }
 
   Widget _createTermsAndCondition(BuildContext context) {
-    final textColor = ColorConstants.textColor;
+    final textColor = ColorConstants.textColor1;
     final clickableText = ColorConstants.grey;
     return Text.rich(
       TextSpan(

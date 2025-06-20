@@ -1,5 +1,5 @@
 import 'package:dating_app/core/service/shared_perference_service.dart';
-import 'package:dating_app/data/models/userModal.dart';
+import 'package:dating_app/data/models/userModel.dart';
 import 'package:dating_app/screens/sign_up/graphql/signup_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:dating_app/screens/common_widget/text_widget.dart';
@@ -9,8 +9,8 @@ class CreateProfilePage extends StatelessWidget {
 
   Future<void> updateUser() async {
     try {
-      SignupGraphql().updateUser(
-        id: "a97e929e-6daf-449b-acf2-a1dc2ac89ab4",
+      await SignupGraphql().updateUser(
+        id: SharedPrefsService.getUserID().toString(),
 
         age: int.tryParse(SharedPrefsService.getAge() ?? '') ?? 0,
         name: (SharedPrefsService.getFirstName().toString() +
@@ -22,6 +22,18 @@ class CreateProfilePage extends StatelessWidget {
         occupation: SharedPrefsService.getOccupation(),
         location: SharedPrefsService.getLocation(),
         // instagram: SharedPrefsService.getInstagram(),
+      );
+      await SignupGraphql().createUserPreference(
+        userId: SharedPrefsService.getUserID().toString(),
+        interestedAgeMin:
+            int.tryParse(SharedPrefsService.getMinAge().toString()) ?? 0,
+        interestedAgeMax:
+            int.tryParse(SharedPrefsService.getMaxAge().toString()) ?? 0,
+        interestedGender: SharedPrefsService.getGender().toString(),
+        interestedReligion: SharedPrefsService.getReligionInterestedIn(),
+        maxDistance:
+            int.tryParse(SharedPrefsService.getDistanceKm().toString()) ?? 0,
+        typeOfRelationship: SharedPrefsService.getReligionInterestedIn(),
       );
     } catch (e) {
       print(e);
@@ -53,6 +65,7 @@ class CreateProfilePage extends StatelessWidget {
             const SizedBox(height: 40),
             InkWell(
               onTap: () {
+                print(SharedPrefsService.getAuthToken());
                 updateUser();
               },
               borderRadius: BorderRadius.circular(16),

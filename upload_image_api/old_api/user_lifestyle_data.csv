@@ -1,0 +1,11 @@
+user_id,drinking,dietary_preference,pets,relationship_goal,fitness_level,religion,sleep_schedule,smoking,wants_kids
+user0,False,vegan,True,friends with benefits,moderately active,jewish,early bird,True,True
+user1,True,vegetarian,False,long-term,very active,christian,night owl,False,False
+user2,False,non-veg,True,casual dating,active,hindu,early bird,True,True
+user3,True,non-veg,False,open relationship,active,muslim,night owl,False,False
+user4,False,vegetarian,True,long-term,moderately active,hindu,early bird,False,True
+user5,True,vegan,False,casual dating,very active,christian,night owl,True,False
+user6,False,non-veg,True,long-term,moderately active,jewish,early bird,False,True
+user7,True,vegetarian,False,open relationship,active,muslim,night owl,True,False
+user8,False,vegan,True,casual dating,active,hindu,early bird,False,True
+user9,True,non-veg,False,friends with benefits,very active,christian,night owl,True,False

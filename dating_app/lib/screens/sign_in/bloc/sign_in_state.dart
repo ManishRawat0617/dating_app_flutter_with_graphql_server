@@ -37,3 +37,7 @@ class ErrorState extends SignInState {
 class LoadingState extends SignInState {
   const LoadingState();
 }
+
+class NextPersonalDetailPageState extends SignInState {
+  const NextPersonalDetailPageState();
+}

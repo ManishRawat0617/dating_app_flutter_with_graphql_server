@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class ColorConstants {
-  static const textColor = Color(0xFF1F2022);
+  // static const textColor = Color(0xFF1F2022);
 
   static const textBlack = Color(0xFF1F2022);
   static const white = Color(0xFFFFFFFF);
@@ -29,4 +29,9 @@ class ColorConstants {
 
   static const profileLikeColor = Colors.green;
   static const profiledislikeColor = Colors.red;
+
+  static const textColor1 = Color.fromRGBO(172, 23, 84, 1);
+  static const textColor2 = Color.fromRGBO(247, 168, 196, 1);
+  static const textColor3 = Color.fromRGBO(243, 113, 153, 1);
+  static const textColor4 = Colors.blueGrey;
 }

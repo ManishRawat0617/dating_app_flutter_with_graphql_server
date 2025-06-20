@@ -5,7 +5,7 @@ import 'package:dating_app/core/service/shared_perference_service.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class SignInGraphql {
-  Future<String> SignInUser(
+  Future<Map<String, dynamic>> SignInUser(
       {required String email, required String password}) async {
     const String signInMutation = '''
 mutation loginUser(\$email:String!, \$password_hash:String!) {
@@ -34,7 +34,7 @@ mutation loginUser(\$email:String!, \$password_hash:String!) {
         final userId = response.data?['loginUser']['user']['id'];
         SharedPrefsService.setAuthToken(token);
         SharedPrefsService.setUserID(userId);
-        return token;
+        return {"token": token, "userId": userId};
       }
     } catch (e) {
       throw Exception('Server error: ${e.toString()}');

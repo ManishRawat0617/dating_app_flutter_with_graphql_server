@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-import 'package:dating_app/data/models/userModal.dart';
+import 'package:dating_app/data/models/userLifestyleModel.dart';
+import 'package:dating_app/data/models/userModel.dart';
+import 'package:dating_app/data/models/userPersonalityDetailsModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefsService {
@@ -15,6 +17,17 @@ class SharedPrefsService {
   static Future<void> saveUser(UserModel user) async {
     final jsonString = jsonEncode(user.toMap());
     await _prefs?.setString('user_model', jsonString);
+  }
+
+  static Future<void> saveUserLifestyle(UserLifestyle userLifestyle) async {
+    final jsonString = jsonEncode(userLifestyle.toMap());
+    await _prefs?.setString('user_lifestyle', jsonString);
+  }
+
+  static Future<void> saveUserPersonality(
+      UserPersonalityDetails userPersonalityDetails) async {
+    final jsonString = jsonEncode(userPersonalityDetails.toMap());
+    await _prefs?.setString('user_personality', jsonString);
   }
 
   static Future<void> setIsLoggedIn(bool value) async =>
@@ -87,6 +100,22 @@ class SharedPrefsService {
 
     final map = jsonDecode(jsonString);
     return UserModel.fromMap(map);
+  }
+
+  static UserLifestyle? getUserLifestyle() {
+    final jsonString = _prefs?.getString('user_lifestyle');
+    if (jsonString == null) return null;
+
+    final map = jsonDecode(jsonString);
+    return UserLifestyle.fromMap(map);
+  }
+
+  static UserPersonalityDetails? getUserPersonality() {
+    final jsonString = _prefs?.getString('user_personality');
+    if (jsonString == null) return null;
+
+    final map = jsonDecode(jsonString);
+    return UserPersonalityDetails.fromMap(map);
   }
 
   static bool getIsLoggedIn() => _prefs?.getBool('isLoggedIn') ?? false;

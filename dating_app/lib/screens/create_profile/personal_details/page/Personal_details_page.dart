@@ -1,3 +1,4 @@
+import 'package:dating_app/core/utilis/snackbar/ShowToast.dart';
 import 'package:dating_app/screens/create_profile/more_about_you/page/more_about_you_page.dart';
 import 'package:dating_app/screens/create_profile/bloc/personal_details_bloc.dart';
 import 'package:dating_app/screens/create_profile/personal_details/widget/personal_details_content.dart';
@@ -24,14 +25,7 @@ class PersonalDetailsPage extends StatelessWidget {
             );
           });
         } else if (state is ErrorState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+          ShowToast.display(message: state.message);
         }
       },
       builder: (context, state) {

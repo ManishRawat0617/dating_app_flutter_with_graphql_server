@@ -16,7 +16,7 @@ class DotIndicatorWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        ...List.generate(6, (index) {
+        ...List.generate(9, (index) {
           return Container(
             margin: const EdgeInsets.only(right: 8),
             width: 10,

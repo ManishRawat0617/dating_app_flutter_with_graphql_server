@@ -8,6 +8,7 @@ import 'package:dating_app/screens/create_profile/common_widget/dot_indicator.da
 import 'package:dating_app/screens/create_profile/bloc/personal_details_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class PersonalDetailsContent extends StatefulWidget {
   @override
@@ -79,11 +80,12 @@ class _PersonalDetailsContentState extends State<PersonalDetailsContent> {
               const SizedBox(
                 height: spaceBtwWidget,
               ),
-              _buildTextField(
-                  PersonalDetailsPageText.dateOfBirth,
-                  PersonalDetailsPageText.dateOfBirthPlaceholder,
-                  bloc.dateOfBirthController,
-                  keyboardType: TextInputType.datetime),
+              buildDatePickerField(
+                label: "Date of Birth",
+                hint: "YYYY-MM-DD",
+                controller: bloc.dateOfBirthController,
+                context: context,
+              ),
               const SizedBox(
                 height: spaceBtwWidget,
               ),
@@ -91,7 +93,7 @@ class _PersonalDetailsContentState extends State<PersonalDetailsContent> {
                   ListConstant.genderList, _gender, (val) {
                 final bloc = BlocProvider.of<PersonalDetailsBloc>(context);
                 setState(() {
-                  _gender = val; 
+                  _gender = val;
                   bloc.genderController.text = val ?? '';
                 });
 
@@ -104,33 +106,32 @@ class _PersonalDetailsContentState extends State<PersonalDetailsContent> {
                 ));
               }),
               const SizedBox(
-                height: spaceBtwWidget,
+                height: spaceBtwWidget + 8,
               ),
-              _buildTextField(PersonalDetailsPageText.age,
-                  PersonalDetailsPageText.agePlaceholder, bloc.ageController,
-                  keyboardType: TextInputType.number),
+              const TextWidget(
+                title: PersonalDetailsPageText.age,
+                textColor: ColorConstants.primary,
+                textSize: 14,
+                boldness: FontWeight.bold,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              TextWidget(
+                title: bloc.ageController.text.toString(),
+                textColor: ColorConstants.textColor1,
+                textSize: 18,
+                boldness: FontWeight.bold,
+              ),
+              // _buildTextField(PersonalDetailsPageText.age,
+              //     PersonalDetailsPageText.agePlaceholder, bloc.ageController,
+              //     keyboardType: TextInputType.number),
+              // const SizedBox(
+              //   height: spaceBtwWidget * 4,
+              // ),
               const SizedBox(
                 height: spaceBtwWidget * 4,
               ),
-
-              // _buildDropdown("Sexual orientation",
-              //     ListConstant.sexualOrientationList, _orientation, (val) {
-              //   final bloc = BlocProvider.of<PersonalDetailsBloc>(context);
-              //   setState(() {
-              //     _orientation = val;
-              //     bloc.sexualOrientationController.text = val ?? '';
-              //   });
-
-              //   bloc.add(OnTextChangedPersonalDetails(
-              //     firstName: bloc.firstNameController.text,
-              //     lastName: bloc.lastNameController.text,
-              //     age: bloc.ageController.text,
-              //     dateOfBirth: bloc.dateOfBirthController.text,
-              //     gender: bloc.genderController.text,
-              //     sexualOrientation: bloc.sexualOrientationController.text,
-              //   ));
-              // }),
-
               _buildNextButton(context),
             ],
           ),
@@ -176,6 +177,8 @@ class _PersonalDetailsContentState extends State<PersonalDetailsContent> {
         TextWidget(
           title: label,
           textColor: ColorConstants.primary,
+          textSize: 14,
+          boldness: FontWeight.bold,
         ),
         const SizedBox(
           height: 5,
@@ -219,6 +222,93 @@ class _PersonalDetailsContentState extends State<PersonalDetailsContent> {
             fillColor: ColorConstants.textFieldBackground,
           ),
         ),
+      ],
+    );
+  }
+
+  Widget buildDatePickerField({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+    required BuildContext context,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextWidget(
+          title: label,
+          textColor: ColorConstants.primary,
+          textSize: 14,
+          boldness: FontWeight.bold,
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        TextField(
+            controller: controller,
+            readOnly: true,
+            decoration: InputDecoration(
+              suffixIcon: const Icon(Icons.calendar_today),
+              suffixIconColor: ColorConstants.primary,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                    color: ColorConstants.textFieldBorder.withOpacity(0.4)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: const BorderSide(
+                  color: ColorConstants.primary,
+                ),
+              ),
+              hintText: hint,
+              hintStyle: const TextStyle(
+                color: ColorConstants.grey,
+                fontSize: 16,
+              ),
+              filled: true,
+              fillColor: ColorConstants.textFieldBackground,
+            ),
+            onTap: () async {
+              FocusScope.of(context).unfocus(); // close keyboard
+
+              DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: DateTime(2000),
+                firstDate: DateTime(1900),
+                lastDate: DateTime.now(),
+              );
+
+              if (pickedDate != null) {
+                String formattedDate =
+                    DateFormat('yyyy-MM-dd').format(pickedDate);
+                controller.text = formattedDate;
+
+                // Calculate age
+                final today = DateTime.now();
+                int age = today.year - pickedDate.year;
+                if (today.month < pickedDate.month ||
+                    (today.month == pickedDate.month &&
+                        today.day < pickedDate.day)) {
+                  age--;
+                }
+
+                // Set age to the bloc's ageController
+                final bloc = BlocProvider.of<PersonalDetailsBloc>(context);
+                bloc.ageController.text = age.toString();
+
+                // Trigger event to update state
+                bloc.add(OnTextChangedPersonalDetails(
+                  firstName: bloc.firstNameController.text,
+                  lastName: bloc.lastNameController.text,
+                  age: bloc.ageController.text,
+                  dateOfBirth: bloc.dateOfBirthController.text,
+                  gender: bloc.genderController.text,
+                ));
+              }
+            }),
       ],
     );
   }

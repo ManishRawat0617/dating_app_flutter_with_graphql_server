@@ -40,9 +40,23 @@ const userPreferenceTypeDefs = `
   }
 
   type Mutation {
-    createUserPreference(input: CreateUserPreferenceInput!): UserPreference
-    updateUserPreference(id: ID!, input: UpdateUserPreferenceInput!): UserPreference
-    deleteUserPreference(id: ID!): Boolean
+    createUserPreference(  user_id: ID!
+    type_of_relationship: String
+    interested_gender: String
+    interested_religion: String
+    interested_age_min: Int
+    interested_age_max: Int
+    max_distance: Int): UserPreference
+    updateUserPreference(id: ID!
+    user_id: ID!
+       type_of_relationship: String
+    interested_gender: String
+    interested_religion: String
+    interested_age_min: Int
+    interested_age_max: Int
+    max_distance: Int): UserPreference
+    deleteUserPreference(id: ID!
+     user_id: ID!): Boolean
   }
 `;
 
@@ -69,9 +83,9 @@ const userPreferenceResolvers = {
   },
 
   Mutation: {
-    createUserPreference: async (_, { input }) => {
-      const id = uuidv4();
-      const {
+    createUserPreference: async (
+      _,
+      {
         user_id,
         type_of_relationship,
         interested_gender,
@@ -79,7 +93,9 @@ const userPreferenceResolvers = {
         interested_age_min,
         interested_age_max,
         max_distance,
-      } = input;
+      }
+    ) => {
+      const id = uuidv4();
 
       const { rows } = await pool.query(
         `INSERT INTO user_preferences (
@@ -101,21 +117,23 @@ const userPreferenceResolvers = {
       return rows[0];
     },
 
-    updateUserPreference: async (_, { id, input }) => {
-      const existing = await pool.query(
-        "SELECT * FROM user_preferences WHERE id = $1",
-        [id]
-      );
-      if (!existing.rows.length) throw new Error("User preference not found");
-
-      const {
+    updateUserPreference: async (
+      _,
+      {
+        id,
         type_of_relationship,
         interested_gender,
         interested_religion,
         interested_age_min,
         interested_age_max,
         max_distance,
-      } = input;
+      }
+    ) => {
+      const existing = await pool.query(
+        "SELECT * FROM user_preferences WHERE id = $1",
+        [id]
+      );
+      if (!existing.rows.length) throw new Error("User preference not found");
 
       const { rows } = await pool.query(
         `UPDATE user_preferences SET

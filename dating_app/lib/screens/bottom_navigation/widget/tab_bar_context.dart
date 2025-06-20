@@ -1,8 +1,7 @@
 import 'package:dating_app/core/constants/color_constants.dart';
+import 'package:dating_app/screens/User/profile%20screen/page/profile_page.dart';
 import 'package:dating_app/screens/chatting/page/chat_inbox_page.dart';
 import 'package:dating_app/screens/home/widget/home_context.dart';
-import 'package:dating_app/screens/profile/page/profile_page.dart';
-import 'package:dating_app/screens/profile/widget/profile_context.dart';
 import 'package:dating_app/screens/subscription/page/subscription_page.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
